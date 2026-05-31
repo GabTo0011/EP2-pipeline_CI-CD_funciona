@@ -160,7 +160,8 @@ jobs:
           context: ./backend
           file: ./backend/Dockerfile
           push: true
-          tags: ${{ env.REGISTRY }}/${{ steps.image-name.outputs.image }}:latest,${{ env.REGISTRY }}/${{ steps.image-name.outputs.image }}:${{ github.sha }}
+          # tags: ${{ env.REGISTRY }}/${{ steps.image-name.outputs.image }}:latest,${{ env.REGISTRY }}/${{ steps.image-name.outputs.image }}:${{ github.sha }}
+          tags: ${{ env.REGISTRY }}/${{ steps.image-name.outputs.image }}:latest,${{ env.REGISTRY }}/${{ steps.image-name.outputs.image }}:1.0.0
 
   # =========================
   # 🚀 5. SIMULATED DEPLOYMENT
@@ -182,7 +183,8 @@ jobs:
       - name: Desplegar entorno simulado
         run: |
           # Definimos las variables apuntando a las imágenes de GHCR (🌟 Usamos "needs" en lugar de "steps")
-          export BACKEND_IMAGE="${{ env.REGISTRY }}/${{  needs.build-and-push.outputs.image_name }}:${{ github.sha }}"
+          # export BACKEND_IMAGE="${{ env.REGISTRY }}/${{  needs.build-and-push.outputs.image_name }}:${{ github.sha }}"
+          export BACKEND_IMAGE="${{ env.REGISTRY }}/${{  needs.build-and-push.outputs.image_name }}:1.0.0"
           
           # Docker Compose leerá estas variables y descargará las imágenes en vez de compilar
           docker-compose up -d

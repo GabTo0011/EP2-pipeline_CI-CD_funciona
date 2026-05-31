@@ -12,7 +12,7 @@ WORKDIR /app
 ENV NODE_ENV=production
 COPY package*.json ./
 # Instalar solo dependencias de producción
-RUN npm install --omit=dev && npm ci --omit=dev && npm cache clean --force
+RUN npm install && npm ci --omit=dev && npm cache clean --force
 # Copiar los binarios compilados desde la etapa anterior
 COPY --from=builder /app/dist ./dist
 

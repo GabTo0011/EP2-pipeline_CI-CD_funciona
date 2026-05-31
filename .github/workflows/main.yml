@@ -171,6 +171,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Instalar docker-compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+
       - name: Desplegar entorno simulado
         run: |
           docker-compose up -d

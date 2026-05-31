@@ -1,7 +1,7 @@
 # Etapa 1: Construcción (Builder)
 FROM node:20-bookworm-slim AS builder
 WORKDIR /app
-COPY package*.json ./
+COPY package*.json .
 RUN npm ci
 COPY . .
 RUN npm run build
@@ -10,7 +10,7 @@ RUN npm run build
 FROM node:20-bookworm-slim
 WORKDIR /app
 ENV NODE_ENV=production
-COPY package*.json ./
+COPY package*.json .
 # Instalar solo dependencias de producción
 RUN npm ci --omit=dev && npm cache clean --force
 # Copiar los binarios compilados desde la etapa anterior

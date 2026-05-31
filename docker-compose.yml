@@ -1,10 +1,12 @@
-version: "3.8"
+# version: "3.8"
 
 services:
   backend:
+    # Si estás en GitHub Actions usa la imagen del registro. Si estás local, compila.
+    image: ${BACKEND_IMAGE:-nestjs-users-backend:local}
     build:
-      context: .
-      dockerfile: backend/Dockerfile
+      context: ./backend
+      dockerfile: Dockerfile
     container_name: nestjs-users-backend
     environment:
       - PORT=3080

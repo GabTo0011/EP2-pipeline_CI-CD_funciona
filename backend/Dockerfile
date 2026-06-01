@@ -10,6 +10,7 @@ RUN npm run build
 FROM node:20-bookworm-slim
 WORKDIR /app
 ENV NODE_ENV=production
+ENV PORT=3080
 COPY package*.json .
 # Instalar solo dependencias de producción
 RUN npm ci --omit=dev && npm cache clean --force

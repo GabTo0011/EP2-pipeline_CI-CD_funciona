@@ -214,7 +214,7 @@ jobs:
     # 🌟 ESTA LÍNEA OBLIGA A WINDOWS A EJECUTAR TODO DENTRO DE WSL
     defaults:
       run:
-        shell: wsl {0}
+        shell: pwsh
 
     steps:
       - name: Autenticar Docker local en GHCR
@@ -226,21 +226,23 @@ jobs:
 
       - name: Descargar última imagen compilada
         run: |
-          docker pull ${{ env.REGISTRY }}/${{ needs.build-and-push.outputs.image_name }}:latest
-
-      - name: Detener contenedor local antiguo (si existe)
+          docker pull "${{ env.REGISTRY }}/${{ needs.build-and-push.outputs.image_name }}:latest"
+        
+      - name: Detener contenedor local antiguo (si existe)  
         run: |
-          docker stop ep1-backend-container || true
-          docker rm ep1-backend-container || true
+          # docker stop ep1-backend-container || true
+          # docker rm ep1-backend-container || true
+          docker stop ep1-backend-container -ErrorAction SilentlyContinue
+          docker rm ep1-backend-container -ErrorAction SilentlyContinue
 
       - name: Iniciar contenedor local actualizado
         run: |
           # Modifica el puerto de la izquierda (ej. 3080) según necesites acceder en tu PC
-          docker run -d \
-            --name ep1-backend-container \
-            --restart always \
-            -p 3080:3080 \
-            ${{ env.REGISTRY }}/${{ needs.build-and-push.outputs.image_name }}:latest
+          docker run -d `
+            --name ep1-backend-container `
+            --restart always `
+            -p 3080:3080 `
+            "${{ env.REGISTRY }}/${{ needs.build-and-push.outputs.image_name }}:latest"
 
       - name: Limpiar imágenes antiguas
         run: |

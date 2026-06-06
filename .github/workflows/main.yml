@@ -232,8 +232,7 @@ jobs:
         run: |
           # docker stop ep1-backend-container || true
           # docker rm ep1-backend-container || true
-          docker stop ep1-backend-container -ErrorAction SilentlyContinue
-          docker rm ep1-backend-container -ErrorAction SilentlyContinue
+          docker stop ep1-backend-container 2>$null; docker rm ep1-backend-container 2>$null; $true
 
       - name: Iniciar contenedor local actualizado
         run: |

@@ -223,6 +223,7 @@ jobs:
           docker pull ${{ env.REGISTRY }}/${{ needs.build-and-push.outputs.image_name }}:1.0.0
 
       - name: Detener contenedor local antiguo (si existe)
+        shell: bash
         run: |
           docker stop ep1-backend-container || true
           docker rm ep1-backend-container || true

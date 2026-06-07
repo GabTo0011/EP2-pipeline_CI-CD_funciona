@@ -230,9 +230,21 @@ jobs:
         
       - name: Detener contenedor local antiguo (si existe)  
         run: |
+          # Verificar que Docker está activo
+          docker ps | Out-Null
+
+          # Detener e eliminar contenedor si existe
+          $container = docker ps -a -q -f name=ep1-backend-container 2>$null
+          if($container){
+            docker stop $container 2>$null
+            docker rm $container 2>$null
+          }
+          
+          Write-Host "Contenedor limpiado"
+          
           # docker stop ep1-backend-container || true
           # docker rm ep1-backend-container || true
-          docker stop ep1-backend-container 2>$null; docker rm ep1-backend-container 2>$null; $true
+          # docker stop ep1-backend-container 2>$null; docker rm ep1-backend-container 2>$null; $true
 
       - name: Iniciar contenedor local actualizado
         run: |

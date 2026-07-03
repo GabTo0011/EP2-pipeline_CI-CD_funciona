@@ -213,7 +213,7 @@ jobs:
 
     # Mantenemos la variable aquí para que Docker Compose la reconozca al encender/apagar
     env:
-      BACKEND_IMAGE: ${{ env.REGISTRY }}/${{ needs.build-and-push.outputs.image_name }}:latest
+      BACKEND_IMAGE: ghcr.io/${{ needs.build-and-push.outputs.image_name }}:latest
 
     steps:
       - name: Checkout de los archivos de configuración (Docker Compose)

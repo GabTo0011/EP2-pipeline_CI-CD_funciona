@@ -227,10 +227,10 @@ jobs:
           export BACKEND_IMAGE="${{ env.REGISTRY }}/${{ needs.build-and-push.outputs.image_name }}:1.0.0"
           
           # Apagar la versión anterior y remover volúmenes huérfanos
-          docker compose down
+          docker-compose down
           
           # Levantar la nueva imagen descargada en segundo plano
-          docker compose up -d
+          docker-compose up -d
 
   # ==========================================
   # 🏠 7. REAL LOCAL DEPLOYMENT (WSL - OPCIONAL)

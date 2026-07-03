@@ -210,6 +210,11 @@ jobs:
     runs-on: [self-hosted, aws-ec2] # <-- Usa las etiquetas de tu runner en AWS
     needs: [build-and-push, deploy-simulated]
     if: github.ref == 'refs/heads/main'
+
+    # Mantenemos la variable aquí para que Docker Compose la reconozca al encender/apagar
+    env:
+      BACKEND_IMAGE: ${{ env.REGISTRY }}/${{ needs.build-and-push.outputs.image_name }}:latest
+
     steps:
       - name: Checkout de los archivos de configuración (Docker Compose)
         uses: actions/checkout@v4
@@ -221,24 +226,21 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Desplegar Contenedores en EC2 con Docker Compose
+      - name: Descargar última imagen compilada desde GHCR
         run: |
-          # Definimos la imagen de GHCR para que Docker Compose la use
-          export BACKEND_IMAGE="${{ env.REGISTRY }}/${{ needs.build-and-push.outputs.image_name }}:latest"
-          
-          # 2. Detener y eliminar contenedores antiguos (si existen)
+          docker pull "${BACKEND_IMAGE}"
+
+      - name: Detener y eliminar contenedores antiguos (si existen)
+        run: |
           docker compose down --remove-orphans
-          
-          # 3. Descargar las últimas versiones de las imágenes necesarias desde GHCR
-          docker compose pull
-          
-          # 4. Iniciar los contenedores nuevos desde el nuevo compose
+
+      - name: Iniciar nuevos contenedores desde el Compose
+        run: |
+          # Docker Compose detectará la imagen descargada en el paso anterior y la usará al instante
           docker compose up -d
-          
-          # 5. 🌟 SOLUCIÓN: Limpieza total de imágenes antiguas y huérfanas
-          # El comando 'prune -a -f' elimina todas las imágenes que no estén siendo usadas por un contenedor activo.
-          # Al ejecutarse DESPUÉS de levantar los nuevos contenedores, borrará con total seguridad las imágenes viejas 
-          # descargadas en los pushes anteriores liberando espacio vital en la t2.micro.
+
+      - name: Limpiar imágenes antiguas y huérfanas
+        run: |
           docker image prune -a -f
 
   # ==========================================
